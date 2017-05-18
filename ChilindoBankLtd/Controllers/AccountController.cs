@@ -9,55 +9,62 @@ using System.Web.Http;
 
 namespace ChilindoBankLtd.Controllers
 {
-    //[RoutePrefix("api/account")]
+    [RoutePrefix("api/account")]
     public class AccountController: ApiController
     {
         SQLCommnicator sqlComm = new SQLCommnicator();
         ModelFactory modelFactory = new ModelFactory();
 
-        //[Route("balance/{accountnumber}")]
+        [Route("balance")]
         public HttpResponseMessage Get(int accountnumber)
         {
             BankAccountModel result = modelFactory.Create(sqlComm.GetAccount(accountnumber));
 
-            if (result != null)
-            {
-                return Request.CreateResponse(HttpStatusCode.OK, modelFactory.CreateResponse(result, message: "Bank Account fetch success."));
-            }
-
-            return Request.CreateResponse(HttpStatusCode.NotFound);
+            if (result == null)
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            
+            return Request.CreateResponse(HttpStatusCode.OK, modelFactory.CreateResponse(result, message: "Bank Account fetch success."));
         }
 
         //Withdraw
+        [Route("withdraw")]
         public HttpResponseMessage Get(int accountNumber, decimal amount, string currency)
         {
             BankAccountModel result = modelFactory.Create(sqlComm.GetAccount(accountNumber));
 
-            if (result != null)
-            {
-                if (result.Balance >= amount && !result.IsLocked)
-                {
-                    result = modelFactory.Create(sqlComm.Withdraw(result, amount, currency));
+            if (result == null)
+                return Request.CreateResponse(HttpStatusCode.NotFound);
 
-                    return Request.CreateResponse(HttpStatusCode.OK, modelFactory.CreateResponse(result, message: "Withdrawal Complete!"));
-                }
+            if (!result.Currency.Equals(currency, StringComparison.OrdinalIgnoreCase))
+                return Request.CreateResponse(HttpStatusCode.Conflict, modelFactory.CreateResponse(result, false, message: "Currency Mismatch"));
+
+            if (result.IsLocked)
+                return Request.CreateResponse(HttpStatusCode.RequestTimeout, modelFactory.CreateResponse(result, false, message: "Sorry for the inconvenience, the sever is busy, please try again later."));
+   
+            if (result.Balance < amount)
                 return Request.CreateResponse(HttpStatusCode.Forbidden, "Your account balance is insufficient to fulfill this request.");
-            }
-            return Request.CreateResponse(HttpStatusCode.NotFound);
+            
+            result = modelFactory.Create(sqlComm.Withdraw(result, amount, currency));
+            return Request.CreateResponse(HttpStatusCode.OK, modelFactory.CreateResponse(result, message: "Withdrawal Complete!"));
         }
 
         //Deposit
+        [Route("deposit")]
         public HttpResponseMessage Put(int accountNumber, decimal amount, string currency)
         {
             BankAccountModel result = modelFactory.Create(sqlComm.GetAccount(accountNumber));
 
-            if (result != null && !result.IsLocked)
-            {
-                result = modelFactory.Create(sqlComm.Deposit(result, amount, currency));
+            if (result == null )
+                return Request.CreateResponse(HttpStatusCode.NotFound);
 
-                return Request.CreateResponse(HttpStatusCode.OK, modelFactory.CreateResponse(result, message: "Deposit Complete!"));
-            }
-            return Request.CreateResponse(HttpStatusCode.NotFound);
+            if (!result.Currency.Equals(currency, StringComparison.OrdinalIgnoreCase))
+                return Request.CreateResponse(HttpStatusCode.Conflict, modelFactory.CreateResponse(result, false, message: "Currency Mismatch"));
+
+            if (result.IsLocked)
+                return Request.CreateResponse(HttpStatusCode.RequestTimeout, modelFactory.CreateResponse(result,false, message: "Sorry for the inconvenience, the sever is busy, please try again later."));
+
+            result = modelFactory.Create(sqlComm.Deposit(result, amount, currency));
+            return Request.CreateResponse(HttpStatusCode.OK, modelFactory.CreateResponse(result, message: "Deposit Complete!"));
         }
     }
 }

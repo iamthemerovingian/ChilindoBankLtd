@@ -12,25 +12,25 @@ namespace ChilindoBankLtd
             // Web API configuration and services
 
             // Web API routes
-            //config.MapHttpAttributeRoutes();
+            config.MapHttpAttributeRoutes();
 
-            config.Routes.MapHttpRoute(
-                name: "AccountBalance",
-                routeTemplate: "api/account/balance/{accountNumber}",
-                defaults: new { controller = "account"}
-            );
+            //config.Routes.MapHttpRoute(
+            //    name: "AccountBalance",
+            //    routeTemplate: "api/account/balance",
+            //    defaults: new { controller = "account"}
+            //);
 
-            config.Routes.MapHttpRoute(
-                 name: "Deposit",
-                 routeTemplate: "api/account/deposit",
-                 defaults: new { controller = "account" }
-             );
+            //config.Routes.MapHttpRoute(
+            //     name: "Deposit",
+            //     routeTemplate: "api/account/deposit",
+            //     defaults: new { controller = "account" }
+            // );
 
-            config.Routes.MapHttpRoute(
-                 name: "Widthraw",
-                 routeTemplate: "api/account/widthraw",
-                 defaults: new { controller = "account" }
-             );
+            //config.Routes.MapHttpRoute(
+            //     name: "Widthraw",
+            //     routeTemplate: "api/account/widthraw",
+            //     defaults: new { controller = "account" }
+            // );
 
             //config.Routes.MapHttpRoute(
             //    name: "Deposit",
