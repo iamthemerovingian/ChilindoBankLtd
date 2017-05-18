@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.6
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChilindoBankLtd", "ChilindoBankLtd\ChilindoBankLtd.csproj", "{01AD59AA-B955-4B20-9AA3-AD0A57F7DD8D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChilindoBankLtd.Tests", "ChilindoBankLtd.Tests\ChilindoBankLtd.Tests.csproj", "{29B8F645-9C5F-4E27-BB4D-459246CEECDD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{01AD59AA-B955-4B20-9AA3-AD0A57F7DD8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01AD59AA-B955-4B20-9AA3-AD0A57F7DD8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01AD59AA-B955-4B20-9AA3-AD0A57F7DD8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01AD59AA-B955-4B20-9AA3-AD0A57F7DD8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29B8F645-9C5F-4E27-BB4D-459246CEECDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29B8F645-9C5F-4E27-BB4D-459246CEECDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29B8F645-9C5F-4E27-BB4D-459246CEECDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29B8F645-9C5F-4E27-BB4D-459246CEECDD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
