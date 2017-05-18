@@ -192,6 +192,7 @@
     <Compile Include="Models\ModelFactory.cs" />
     <Compile Include="Models\RequestResponse.cs" />
     <Compile Include="Models\SQLCommnicator.cs" />
+    <Compile Include="Models\WidthrawModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

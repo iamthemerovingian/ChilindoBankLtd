@@ -10,13 +10,17 @@ namespace ChilindoBankLtd.Models
     {
         public BankAccountModel Create(BankAccount bankAccount)
         {
-            return new BankAccountModel
+            if (bankAccount != null)
             {
-                AccountNumber = bankAccount.AccountNumber,
-                Balance = bankAccount.Balance,
-                Currency = bankAccount.Currency,
-                IsLocked = bankAccount.IsLocked
-            };
+                return new BankAccountModel
+                {
+                    AccountNumber = bankAccount.AccountNumber,
+                    Balance = bankAccount.Balance,
+                    Currency = bankAccount.Currency,
+                    IsLocked = bankAccount.IsLocked
+                };
+            }
+            return null;
         }
 
         public RequestResponse CreateResponse(BankAccountModel result, bool successful=true, string message="")
