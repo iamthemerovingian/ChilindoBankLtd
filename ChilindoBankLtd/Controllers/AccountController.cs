@@ -27,28 +27,35 @@ namespace ChilindoBankLtd.Controllers
 
             return Request.CreateResponse(HttpStatusCode.NotFound);
         }
-        //[Route("deposit")]
-        //public HttpResponseMessage Put([FromBody] WidthrawModel widthrawal)
-        //{
-        //    BankAccountModel result = modelFactory.Create(sqlComm.GetAccount(widthrawal.AccountNumber));
-        //    if (result != null)
-        //    {
-        //        return Request.CreateResponse(HttpStatusCode.OK, modelFactory.CreateResponse(result, message: "Bank Account fetch success."));
-        //    }
-        //    return Request.CreateResponse(HttpStatusCode.NotFound);
-        //}
-        public HttpResponseMessage Put(int accountNumber, decimal amount, string currency)
+
+        //Withdraw
+        public HttpResponseMessage Get(int accountNumber, decimal amount, string currency)
         {
             BankAccountModel result = modelFactory.Create(sqlComm.GetAccount(accountNumber));
 
             if (result != null)
             {
+                if (result.Balance >= amount && !result.IsLocked)
+                {
+                    result = modelFactory.Create(sqlComm.Withdraw(result, amount, currency));
+
+                    return Request.CreateResponse(HttpStatusCode.OK, modelFactory.CreateResponse(result, message: "Withdrawal Complete!"));
+                }
+                return Request.CreateResponse(HttpStatusCode.Forbidden, "Your account balance is insufficient to fulfill this request.");
+            }
+            return Request.CreateResponse(HttpStatusCode.NotFound);
+        }
+
+        //Deposit
+        public HttpResponseMessage Put(int accountNumber, decimal amount, string currency)
+        {
+            BankAccountModel result = modelFactory.Create(sqlComm.GetAccount(accountNumber));
+
+            if (result != null && !result.IsLocked)
+            {
                 result = modelFactory.Create(sqlComm.Deposit(result, amount, currency));
 
-                if (result.Balance > amount)
-                {
-                    return Request.CreateResponse(HttpStatusCode.OK, modelFactory.CreateResponse(result, message: "Deposit Complete!"));
-                }
+                return Request.CreateResponse(HttpStatusCode.OK, modelFactory.CreateResponse(result, message: "Deposit Complete!"));
             }
             return Request.CreateResponse(HttpStatusCode.NotFound);
         }
