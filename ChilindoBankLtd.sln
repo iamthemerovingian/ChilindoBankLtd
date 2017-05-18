@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChilindoBankLtd", "Chilindo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChilindoBankLtd.Tests", "ChilindoBankLtd.Tests\ChilindoBankLtd.Tests.csproj", "{29B8F645-9C5F-4E27-BB4D-459246CEECDD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChilindoBankLtd.Data", "ChilindoBankLtd.Data\ChilindoBankLtd.Data.csproj", "{8F5F1280-9B99-4204-AD75-92DADE8D24EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{29B8F645-9C5F-4E27-BB4D-459246CEECDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29B8F645-9C5F-4E27-BB4D-459246CEECDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{29B8F645-9C5F-4E27-BB4D-459246CEECDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F5F1280-9B99-4204-AD75-92DADE8D24EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F5F1280-9B99-4204-AD75-92DADE8D24EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F5F1280-9B99-4204-AD75-92DADE8D24EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F5F1280-9B99-4204-AD75-92DADE8D24EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
