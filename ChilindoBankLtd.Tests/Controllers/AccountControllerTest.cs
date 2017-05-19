@@ -10,126 +10,87 @@ using System.Web.Http;
 using ChilindoBankLtd.Models;
 using ChilindoBankLtd.Data.Entities;
 using System.Net;
-using Moq;
 using System.Web.Http.Routing;
 
 namespace ChilindoBankLtd.Tests.Controllers
 {
-    /// <summary>
-    /// Summary description for AccountControllerTest
-    /// </summary>
     [TestClass]
     public class AccountControllerTest
     {
-        public AccountControllerTest()
-        {
-            //
-            // TODO: Add constructor logic here
-            //
-
-            controller = new AccountController();
-            dbcontext = new ChilindoBankLtdDB();
-            modelFactory = new ModelFactory();
-        }
-
-        //private TestContext testContextInstance;
         private AccountController controller;
         private ChilindoBankLtdDB dbcontext;
         private ModelFactory modelFactory;
-
-        ///// <summary>
-        /////Gets or sets the test context which provides
-        /////information about and functionality for the current test run.
-        /////</summary>
-        //public TestContext TestContext
-        //{
-        //    get
-        //    {
-        //        return testContextInstance;
-        //    }
-        //    set
-        //    {
-        //        testContextInstance = value;
-        //    }
-        //}
-
-        #region Additional test attributes
-        //
-        // You can use the following additional attributes as you write your tests:
-        //
-        // Use ClassInitialize to run code before running the first test in the class
-        // [ClassInitialize()]
-        // public static void MyClassInitialize(TestContext testContext) { }
-        //
-        // Use ClassCleanup to run code after all tests in a class have run
-        // [ClassCleanup()]
-        // public static void MyClassCleanup() { }
-        //
-        // Use TestInitialize to run code before running each test 
-        // [TestInitialize()]
-        // public void MyTestInitialize() { }
-        //
-        // Use TestCleanup to run code after each test has run
-        // [TestCleanup()]
-        // public void MyTestCleanup() { }
-        //
-        #endregion
+        public AccountControllerTest()
+        {
+            controller = new AccountController()
+            {
+                Request = new HttpRequestMessage(),
+                Configuration = new HttpConfiguration()
+            };
+            dbcontext = new ChilindoBankLtdDB();
+            modelFactory = new ModelFactory();
+        }
 
         [TestMethod]
         public void GetBalanceReturnsRequestResponse()
         {
             //Arrange
-            controller = new AccountController();
-            controller.Request = new HttpRequestMessage();
-            controller.Configuration = new HttpConfiguration();
+            controller = new AccountController()
+            {
+                Request = new HttpRequestMessage(),
+                Configuration = new HttpConfiguration()
+            };
 
             // Act
             HttpResponseMessage response = controller.Get(11111111);
 
             // Assert
-            RequestResponse bankAccount;
-            Assert.IsTrue(response.TryGetContentValue<RequestResponse>(out bankAccount));
+            Assert.IsTrue(response.TryGetContentValue(out RequestResponse bankAccount));
         }
         
         [TestMethod]
         public void WithdrawReturnsRequestResponse()
         {
             //Arrange
-            controller = new AccountController();
-            controller.Request = new HttpRequestMessage();
-            controller.Configuration = new HttpConfiguration();
+            controller = new AccountController()
+            {
+                Request = new HttpRequestMessage(),
+                Configuration = new HttpConfiguration()
+            };
 
             // Act
             HttpResponseMessage response = controller.Get(11111111, 1, "US");
 
             // Assert
-            RequestResponse bankAccount;
-            Assert.IsTrue(response.TryGetContentValue<RequestResponse>(out bankAccount));
+            Assert.IsTrue(response.TryGetContentValue(out RequestResponse bankAccount));
         }
 
         [TestMethod]
         public void DepositReturnsRequestResponse()
         {
             //Arrange
-            controller = new AccountController();
-            controller.Request = new HttpRequestMessage();
-            controller.Configuration = new HttpConfiguration();
+            controller = new AccountController()
+            {
+                Request = new HttpRequestMessage(),
+                Configuration = new HttpConfiguration()
+            };
 
             // Act
             HttpResponseMessage response = controller.Put(11111111, 1, "US");
 
             // Assert
-            RequestResponse bankAccount;
-            Assert.IsTrue(response.TryGetContentValue<RequestResponse>(out bankAccount));
+            Assert.IsTrue(response.TryGetContentValue(out RequestResponse bankAccount));
         }
 
         [TestMethod]
         public void GetBalanceReturnsCorrectAccount()
         {
             //Arrange
-            controller = new AccountController();
-            controller.Request = new HttpRequestMessage();
-            controller.Configuration = new HttpConfiguration();
+            controller = new AccountController()
+            {
+                Request = new HttpRequestMessage(),
+                Configuration = new HttpConfiguration()
+            };
 
             // Act
             HttpResponseMessage response = controller.Get(11111111);
@@ -137,8 +98,7 @@ namespace ChilindoBankLtd.Tests.Controllers
             BankAccountModel dbBankAccount = modelFactory.Create(dbResult);
 
             // Assert
-            RequestResponse bankAccount;
-            response.TryGetContentValue<RequestResponse>(out bankAccount);
+            response.TryGetContentValue(out RequestResponse bankAccount);
             Assert.AreEqual(dbBankAccount.AccountNumber, bankAccount.AccountNumber);
         }
 
@@ -146,9 +106,11 @@ namespace ChilindoBankLtd.Tests.Controllers
         public void WithdrawReducesAccountBalance()
         {
             //Arrange
-            controller = new AccountController();
-            controller.Request = new HttpRequestMessage();
-            controller.Configuration = new HttpConfiguration();
+            controller = new AccountController()
+            {
+                Request = new HttpRequestMessage(),
+                Configuration = new HttpConfiguration()
+            };
 
             // Act
             BankAccount dbResult = dbcontext.BankAccounts.Where(a => a.AccountNumber.Equals(11111111)).FirstOrDefault();
@@ -156,8 +118,7 @@ namespace ChilindoBankLtd.Tests.Controllers
             BankAccountModel dbBankAccount = modelFactory.Create(dbResult);
 
             // Assert
-            RequestResponse bankAccount;
-            Assert.IsTrue(response.TryGetContentValue<RequestResponse>(out bankAccount));
+            Assert.IsTrue(response.TryGetContentValue(out RequestResponse bankAccount));
             Assert.AreEqual(dbBankAccount.Balance - 1, bankAccount.Balance);
         }
 
@@ -165,9 +126,11 @@ namespace ChilindoBankLtd.Tests.Controllers
         public void DepositIncreasesBankAccountBalance()
         {
             //Arrange
-            controller = new AccountController();
-            controller.Request = new HttpRequestMessage();
-            controller.Configuration = new HttpConfiguration();
+            controller = new AccountController()
+            {
+                Request = new HttpRequestMessage(),
+                Configuration = new HttpConfiguration()
+            };
 
             // Act
             BankAccount dbResult = dbcontext.BankAccounts.Where(a => a.AccountNumber.Equals(11111111)).FirstOrDefault();
@@ -175,8 +138,7 @@ namespace ChilindoBankLtd.Tests.Controllers
             BankAccountModel dbBankAccount = modelFactory.Create(dbResult);
 
             // Assert
-            RequestResponse bankAccount;
-            Assert.IsTrue(response.TryGetContentValue<RequestResponse>(out bankAccount));
+            Assert.IsTrue(response.TryGetContentValue(out RequestResponse bankAccount));
             Assert.AreEqual(dbBankAccount.Balance + 1, bankAccount.Balance);
         }
 
@@ -184,9 +146,11 @@ namespace ChilindoBankLtd.Tests.Controllers
         public void BankBalanceCannotBeNegative()
         {
             //Arrange
-            controller = new AccountController();
-            controller.Request = new HttpRequestMessage();
-            controller.Configuration = new HttpConfiguration();
+            controller = new AccountController()
+            {
+                Request = new HttpRequestMessage(),
+                Configuration = new HttpConfiguration()
+            };
 
             // Act
             BankAccount dbResult = dbcontext.BankAccounts.Where(a => a.AccountNumber.Equals(11111111)).FirstOrDefault();
@@ -201,9 +165,11 @@ namespace ChilindoBankLtd.Tests.Controllers
         public void CannotWithdrawInOtherCurrency()
         {
             //Arrange
-            controller = new AccountController();
-            controller.Request = new HttpRequestMessage();
-            controller.Configuration = new HttpConfiguration();
+            controller = new AccountController()
+            {
+                Request = new HttpRequestMessage(),
+                Configuration = new HttpConfiguration()
+            };
 
             // Act
             BankAccount dbResult = dbcontext.BankAccounts.Where(a => a.AccountNumber.Equals(11111111)).FirstOrDefault();
@@ -218,9 +184,11 @@ namespace ChilindoBankLtd.Tests.Controllers
         public void CannotDepositInOtherCurrency()
         {
             //Arrange
-            controller = new AccountController();
-            controller.Request = new HttpRequestMessage();
-            controller.Configuration = new HttpConfiguration();
+            controller = new AccountController()
+            {
+                Request = new HttpRequestMessage(),
+                Configuration = new HttpConfiguration()
+            };
 
             // Act
             BankAccount dbResult = dbcontext.BankAccounts.Where(a => a.AccountNumber.Equals(11111111)).FirstOrDefault();
