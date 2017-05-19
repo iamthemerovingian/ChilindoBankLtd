@@ -10,27 +10,29 @@ namespace ChilindoBankLtd.Models
     {
         public BankAccountModel Create(BankAccount bankAccount)
         {
-            if (bankAccount != null)
+            if (bankAccount == null)
+                return null;
+
+            return new BankAccountModel
             {
-                return new BankAccountModel
-                {
-                    AccountNumber = bankAccount.AccountNumber,
-                    Balance = bankAccount.Balance,
-                    Currency = bankAccount.Currency,
-                    IsLocked = bankAccount.IsLocked
-                };
-            }
-            return null;
+                AccountNumber = bankAccount.AccountNumber,
+                Balance = bankAccount.Balance,
+                Currency = bankAccount.Currency,
+                IsLocked = bankAccount.IsLocked
+            };
         }
 
-        public RequestResponse CreateResponse(BankAccountModel result, bool successful=true, string message="")
+        public RequestResponse CreateResponse(BankAccountModel bankAccount, bool successful=true, string message="")
         {
+            if (bankAccount == null)
+                return null;
+
             return new RequestResponse
             {
-                AccountNumber = result.AccountNumber,
+                AccountNumber = bankAccount.AccountNumber,
                 Successful = successful,
-                Balance = result.Balance,
-                Currency = result.Currency,
+                Balance = bankAccount.Balance,
+                Currency = bankAccount.Currency,
                 Message = message
             };
         }

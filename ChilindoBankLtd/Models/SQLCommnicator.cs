@@ -18,12 +18,11 @@ namespace ChilindoBankLtd.Models
                             .Where(a => a.AccountNumber.Equals(accountNumber))
                             .FirstOrDefault();
 
-                if (query != null)
-                {
-                    return query;
-                }
+                if (query == null)
+                    return null;
+
+                return query;
             }
-            return null;
         }
 
         public BankAccount Deposit(BankAccountModel accountModel, decimal amount, string currency)
