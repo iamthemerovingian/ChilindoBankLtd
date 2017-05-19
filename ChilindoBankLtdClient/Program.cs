@@ -35,8 +35,8 @@ namespace ChilindoBankLtdClient
 
             var parameters = userInput.Split(',');
 
-            var action = parameters[0];
-            var accountNumber = parameters[1];
+            var action = parameters.Length > 0 ? parameters[0] : "";
+            var accountNumber = parameters.Length > 1 ? parameters[1] : "";
             var amount = parameters.Length > 2 ? parameters[2] : "";
             var currency = parameters.Length > 3 ? parameters[3] : "";
 
@@ -44,15 +44,37 @@ namespace ChilindoBankLtdClient
             {
                 await GetBalance(accountNumber);
             }
-
-            if (action.Equals("deposit", StringComparison.OrdinalIgnoreCase))
+            else if (action.Equals("deposit", StringComparison.OrdinalIgnoreCase))
             {
                 await Deposit(accountNumber, amount, currency);
             }
-
-            if (action.Equals("withdraw", StringComparison.OrdinalIgnoreCase))
+            else if (action.Equals("withdraw", StringComparison.OrdinalIgnoreCase))
             {
                 await Withdraw(accountNumber, amount, currency);
+            }
+            else
+            {
+                await DoRandomActions();
+            }
+        }
+        private static async Task DoRandomActions()
+        {
+            Random randomGenerator = new Random();
+            var limit = randomGenerator.Next(0, 1000);
+            for (int i = 0; i < limit; i++)
+            {
+                var action = randomGenerator.Next(1, 3);
+                var amount = randomGenerator.Next(0, 65535);
+
+                if (action.Equals(1))
+                {
+                    await Deposit("11111111", amount.ToString(), "US");
+                }
+
+                if (action.Equals(2))
+                {
+                    await Withdraw("11111111", amount.ToString(), "US");
+                }
             }
         }
 
