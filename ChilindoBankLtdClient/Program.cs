@@ -26,47 +26,7 @@ namespace ChilindoBankLtdClient
             }
         }
 
-        private static Uri GetWithdrawURL(int accountNumber, decimal amount, string currency)
-        {
-            var withdraw = new UriBuilder("http://localhost:55980/api/account/withdraw");
-            var parameters = HttpUtility.ParseQueryString(string.Empty);
-            parameters["accountnumber"] = accountNumber.ToString();
-            parameters["amount"] = amount.ToString();
-            parameters["currency"] = currency.ToString();
-            withdraw.Query = parameters.ToString();
-
-            Uri finalUrl = withdraw.Uri;
-
-            return finalUrl;
-        }
-        private static Uri GetDepositURL(int accountNumber, decimal amount, string currency)
-        {
-            var withdraw = new UriBuilder("http://localhost:55980/api/account/deposit");
-            var parameters = HttpUtility.ParseQueryString(string.Empty);
-            parameters["accountnumber"] = accountNumber.ToString();
-            parameters["amount"] = amount.ToString();
-            parameters["currency"] = currency.ToString();
-            withdraw.Query = parameters.ToString();
-
-            Uri finalUrl = withdraw.Uri;
-
-            return finalUrl;
-        }
-
-        private static Uri GetBalanceURL(int accountNumber)
-        {
-            var withdraw = new UriBuilder("http://localhost:55980/api/account/balance");
-            var parameters = HttpUtility.ParseQueryString(string.Empty);
-            parameters["accountnumber"] = accountNumber.ToString();
-            withdraw.Query = parameters.ToString();
-
-            Uri finalUrl = withdraw.Uri;
-
-            return finalUrl;
-        }
-
-
-
+        //Main Control Logic
         private static async Task DoSomethingSimple()
         {
             Console.WriteLine("State your request");
@@ -96,25 +56,65 @@ namespace ChilindoBankLtdClient
             }
         }
 
+        //Primary Functions.
         private static async Task Withdraw(string accountNumber, string amount, string currency)
         {
             var response = await client.GetAsync(GetWithdrawURL(int.Parse(accountNumber), decimal.Parse(amount), currency));
             await ProcessResponse(response);
 
         }
-
         private static async Task Deposit(string accountNumber, string amount, string currency)
         {
             var response = await client.PutAsJsonAsync(GetDepositURL(int.Parse(accountNumber), decimal.Parse(amount), currency), new RequestResponse() { });
             await ProcessResponse(response);
         }
-
         private async static Task GetBalance(string accountNumber)
         {
             var response = await client.GetAsync(GetBalanceURL(int.Parse(accountNumber)));
             await ProcessResponse(response);
         }
 
+        //Building URIs.
+
+        private static Uri GetWithdrawURL(int accountNumber, decimal amount, string currency)
+        {
+            var withdraw = new UriBuilder("http://localhost:55980/api/account/withdraw");
+            var parameters = HttpUtility.ParseQueryString(string.Empty);
+            parameters["accountnumber"] = accountNumber.ToString();
+            parameters["amount"] = amount.ToString();
+            parameters["currency"] = currency.ToString();
+            withdraw.Query = parameters.ToString();
+
+            Uri finalUrl = withdraw.Uri;
+
+            return finalUrl;
+        }
+        private static Uri GetDepositURL(int accountNumber, decimal amount, string currency)
+        {
+            var withdraw = new UriBuilder("http://localhost:55980/api/account/deposit");
+            var parameters = HttpUtility.ParseQueryString(string.Empty);
+            parameters["accountnumber"] = accountNumber.ToString();
+            parameters["amount"] = amount.ToString();
+            parameters["currency"] = currency.ToString();
+            withdraw.Query = parameters.ToString();
+
+            Uri finalUrl = withdraw.Uri;
+
+            return finalUrl;
+        }
+        private static Uri GetBalanceURL(int accountNumber)
+        {
+            var withdraw = new UriBuilder("http://localhost:55980/api/account/balance");
+            var parameters = HttpUtility.ParseQueryString(string.Empty);
+            parameters["accountnumber"] = accountNumber.ToString();
+            withdraw.Query = parameters.ToString();
+
+            Uri finalUrl = withdraw.Uri;
+
+            return finalUrl;
+        }
+
+        //Processing responses.
         private static async Task ProcessResponse(HttpResponseMessage response)
         {
             RequestResponse requestResponse = null;
@@ -134,7 +134,6 @@ namespace ChilindoBankLtdClient
                 PrintError(response);
             }
         }
-
         private static void PrintError(HttpResponseMessage response)
         {
             if (response == null)
@@ -143,10 +142,25 @@ namespace ChilindoBankLtdClient
             }
             Console.WriteLine();
             Console.WriteLine("*----------------------------*");
-            Console.WriteLine("Error: " + (int)response.StatusCode + " " +response.ReasonPhrase);
+            Console.WriteLine("Error: " + (int)response.StatusCode + " " + response.ReasonPhrase);
             Console.WriteLine("*----------------------------*");
             Console.WriteLine();
 
+        }
+        private static void PrintRequestResponse(RequestResponse requestResponse)
+        {
+            if (requestResponse == null)
+            {
+                return;
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Message: " + requestResponse.Message);
+            Console.WriteLine("Account Number: " + requestResponse.AccountNumber);
+            Console.WriteLine("Successful: " + requestResponse.Successful);
+            Console.WriteLine("Balance: " + requestResponse.Balance);
+            Console.WriteLine("Currency: " + requestResponse.Currency);
+            Console.WriteLine();
         }
     }
 }

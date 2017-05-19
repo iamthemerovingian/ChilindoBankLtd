@@ -78,21 +78,7 @@
 //            Console.ReadLine();
 //        }
 
-//        private static void PrintRequestResponse(RequestResponse requestResponse)
-//        {
-//            if (requestResponse == null)
-//            {
-//                return;
-//            }
 
-//            Console.WriteLine();
-//            Console.WriteLine("Message: " + requestResponse.Message);
-//            Console.WriteLine("Account Number: " + requestResponse.AccountNumber);
-//            Console.WriteLine("Successful: " + requestResponse.Successful);
-//            Console.WriteLine("Balance: " + requestResponse.Balance);
-//            Console.WriteLine("Currency: " + requestResponse.Currency);
-//            Console.WriteLine();
-//        }
 
 //        private static async Task Withdraw(int accountNumber)
 //        {
