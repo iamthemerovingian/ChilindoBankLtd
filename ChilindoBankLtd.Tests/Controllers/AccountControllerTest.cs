@@ -197,5 +197,44 @@ namespace ChilindoBankLtd.Tests.Controllers
             // Assert
             Assert.AreEqual(response.StatusCode, HttpStatusCode.Conflict);
         }
+        [TestMethod]
+        public void WillnotAcceptNegativeFiguresDeposit()
+        {
+            //Arrange
+            controller = new AccountController()
+            {
+                Request = new HttpRequestMessage(),
+                Configuration = new HttpConfiguration()
+            };
+
+            // Act
+            BankAccount dbResult = dbcontext.BankAccounts.Where(a => a.AccountNumber.Equals(11111111)).FirstOrDefault();
+            HttpResponseMessage response = controller.Put(11111111, -1, "US");
+            BankAccountModel dbBankAccount = modelFactory.Create(dbResult);
+
+            // Assert            
+            Assert.IsTrue(response.TryGetContentValue(out RequestResponse bankAccount));
+            Assert.AreEqual(dbBankAccount.Balance, bankAccount.Balance);
+        }
+        [TestMethod]
+        public void WillnotAcceptNegativeFiguresWithdrawal()
+        {
+            //Arrange
+            controller = new AccountController()
+            {
+                Request = new HttpRequestMessage(),
+                Configuration = new HttpConfiguration()
+            };
+
+            // Act
+            BankAccount dbResult = dbcontext.BankAccounts.Where(a => a.AccountNumber.Equals(11111111)).FirstOrDefault();
+            HttpResponseMessage response = controller.Get(11111111, -1, "US");
+            BankAccountModel dbBankAccount = modelFactory.Create(dbResult);
+
+            // Assert            
+            Assert.IsTrue(response.TryGetContentValue(out RequestResponse bankAccount));
+            Assert.AreEqual(dbBankAccount.Balance, bankAccount.Balance);
+        }
+
     }
 }

@@ -35,6 +35,9 @@ namespace ChilindoBankLtd.Controllers
             if (result == null)
                 return Request.CreateResponse(HttpStatusCode.NotFound);
 
+            if (amount < 0)
+                return Request.CreateResponse(HttpStatusCode.Forbidden, modelFactory.CreateResponse(result, false, message: "Invalid Amount!"));
+
             if (!result.Currency.Equals(currency, StringComparison.OrdinalIgnoreCase))
                 return Request.CreateResponse(HttpStatusCode.Conflict, modelFactory.CreateResponse(result, false, message: "Currency Mismatch"));
 
@@ -54,8 +57,12 @@ namespace ChilindoBankLtd.Controllers
         {
             BankAccountModel result = modelFactory.Create(sqlComm.GetAccount(accountNumber));
 
+
             if (result == null )
                 return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            if (amount < 0)
+                return Request.CreateResponse(HttpStatusCode.Forbidden, modelFactory.CreateResponse(result, false, message: "Invalid Amount!"));
 
             if (!result.Currency.Equals(currency, StringComparison.OrdinalIgnoreCase))
                 return Request.CreateResponse(HttpStatusCode.Conflict, modelFactory.CreateResponse(result, false, message: "Currency Mismatch"));
