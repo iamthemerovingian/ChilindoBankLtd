@@ -1,7 +1,6 @@
 ﻿using ChilindoBankLtd.Data.Database;
 using ChilindoBankLtd.Data.Entities;
 using System;
-using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 
@@ -49,7 +48,7 @@ namespace ChilindoBankLtd.Models
                     }
                     catch (Exception e)
                     {
-                        //Log Exception
+                        //handle and log exception here.
                     }
                 } while (saveFailed);
 
@@ -86,7 +85,7 @@ namespace ChilindoBankLtd.Models
                     }
                     catch(Exception e)
                     {
-                        //Log Exception
+                        //handle and log exception here.
                     }
                 } while (saveFailed);
 
