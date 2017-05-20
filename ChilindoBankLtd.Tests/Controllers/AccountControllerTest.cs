@@ -10,6 +10,7 @@ using System.Web.Http;
 using ChilindoBankLtd.Models;
 using ChilindoBankLtd.Data.Entities;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace ChilindoBankLtd.Tests.Controllers
 {
@@ -31,7 +32,7 @@ namespace ChilindoBankLtd.Tests.Controllers
         }
 
         [TestMethod]
-        public void GetBalanceReturnsRequestResponse()
+        public async Task GetBalanceReturnsRequestResponse()
         {
             //Arrange
             controller = new AccountController()
@@ -41,7 +42,7 @@ namespace ChilindoBankLtd.Tests.Controllers
             };
 
             // Act
-            HttpResponseMessage response = controller.Get(11111111);
+            HttpResponseMessage response = await controller.Get(11111111);
 
             // Assert
             RequestResponse bankAccount;
@@ -49,7 +50,7 @@ namespace ChilindoBankLtd.Tests.Controllers
         }
         
         [TestMethod]
-        public void WithdrawReturnsRequestResponse()
+        public async Task WithdrawReturnsRequestResponse()
         {
             //Arrange
             controller = new AccountController()
@@ -59,7 +60,7 @@ namespace ChilindoBankLtd.Tests.Controllers
             };
 
             // Act
-            HttpResponseMessage response = controller.Get(11111111, 1, "US");
+            HttpResponseMessage response = await controller.Get(11111111, 1, "US");
 
             // Assert
             RequestResponse bankAccount;
@@ -67,7 +68,7 @@ namespace ChilindoBankLtd.Tests.Controllers
         }
 
         [TestMethod]
-        public void DepositReturnsRequestResponse()
+        public async Task DepositReturnsRequestResponse()
         {
             //Arrange
             controller = new AccountController()
@@ -77,7 +78,7 @@ namespace ChilindoBankLtd.Tests.Controllers
             };
 
             // Act
-            HttpResponseMessage response = controller.Put(11111111, 1, "US");
+            HttpResponseMessage response = await controller.Put(11111111, 1, "US");
 
             // Assert 
             RequestResponse bankAccount;
@@ -85,7 +86,7 @@ namespace ChilindoBankLtd.Tests.Controllers
         }
 
         [TestMethod]
-        public void GetBalanceReturnsCorrectAccount()
+        public async Task GetBalanceReturnsCorrectAccount()
         {
             //Arrange
             controller = new AccountController()
@@ -95,7 +96,7 @@ namespace ChilindoBankLtd.Tests.Controllers
             };
 
             // Act
-            HttpResponseMessage response = controller.Get(11111111);
+            HttpResponseMessage response = await controller.Get(11111111);
             BankAccount dbResult = dbcontext.BankAccounts.Where(a => a.AccountNumber.Equals(11111111)).FirstOrDefault();
             BankAccountModel dbBankAccount = modelFactory.Create(dbResult);
 
@@ -106,7 +107,7 @@ namespace ChilindoBankLtd.Tests.Controllers
         }
 
         [TestMethod]
-        public void WithdrawReducesAccountBalance()
+        public async Task WithdrawReducesAccountBalance()
         {
             //Arrange
             controller = new AccountController()
@@ -117,7 +118,7 @@ namespace ChilindoBankLtd.Tests.Controllers
 
             // Act
             BankAccount dbResult = dbcontext.BankAccounts.Where(a => a.AccountNumber.Equals(11111111)).FirstOrDefault();
-            HttpResponseMessage response = controller.Get(11111111, 1, "US");
+            HttpResponseMessage response = await controller.Get(11111111, 1, "US");
             BankAccountModel dbBankAccount = modelFactory.Create(dbResult);
 
             // Assert
@@ -127,7 +128,7 @@ namespace ChilindoBankLtd.Tests.Controllers
         }
 
         [TestMethod]
-        public void DepositIncreasesBankAccountBalance()
+        public async Task DepositIncreasesBankAccountBalance()
         {
             //Arrange
             controller = new AccountController()
@@ -138,7 +139,7 @@ namespace ChilindoBankLtd.Tests.Controllers
 
             // Act
             BankAccount dbResult = dbcontext.BankAccounts.Where(a => a.AccountNumber.Equals(11111111)).FirstOrDefault();
-            HttpResponseMessage response = controller.Put(11111111, 1, "US");
+            HttpResponseMessage response = await controller.Put(11111111, 1, "US");
             BankAccountModel dbBankAccount = modelFactory.Create(dbResult);
 
             // Assert
@@ -148,7 +149,7 @@ namespace ChilindoBankLtd.Tests.Controllers
         }
 
         [TestMethod]
-        public void BankBalanceCannotBeNegative()
+        public async Task BankBalanceCannotBeNegative()
         {
             //Arrange
             controller = new AccountController()
@@ -159,7 +160,7 @@ namespace ChilindoBankLtd.Tests.Controllers
 
             // Act
             BankAccount dbResult = dbcontext.BankAccounts.Where(a => a.AccountNumber.Equals(11111111)).FirstOrDefault();
-            HttpResponseMessage response = controller.Get(11111111, 99999999999999, "US");
+            HttpResponseMessage response = await controller.Get(11111111, 99999999999999, "US");
             BankAccountModel dbBankAccount = modelFactory.Create(dbResult);
 
             // Assert
@@ -167,7 +168,7 @@ namespace ChilindoBankLtd.Tests.Controllers
         }
 
         [TestMethod]
-        public void CannotWithdrawInOtherCurrency()
+        public async Task CannotWithdrawInOtherCurrency()
         {
             //Arrange
             controller = new AccountController()
@@ -178,7 +179,7 @@ namespace ChilindoBankLtd.Tests.Controllers
 
             // Act
             BankAccount dbResult = dbcontext.BankAccounts.Where(a => a.AccountNumber.Equals(11111111)).FirstOrDefault();
-            HttpResponseMessage response = controller.Get(11111111, 1, "LK");
+            HttpResponseMessage response = await controller.Get(11111111, 1, "LK");
             BankAccountModel dbBankAccount = modelFactory.Create(dbResult);
 
             // Assert
@@ -186,7 +187,7 @@ namespace ChilindoBankLtd.Tests.Controllers
         }
 
         [TestMethod]
-        public void CannotDepositInOtherCurrency()
+        public async Task CannotDepositInOtherCurrency()
         {
             //Arrange
             controller = new AccountController()
@@ -197,14 +198,14 @@ namespace ChilindoBankLtd.Tests.Controllers
 
             // Act
             BankAccount dbResult = dbcontext.BankAccounts.Where(a => a.AccountNumber.Equals(11111111)).FirstOrDefault();
-            HttpResponseMessage response = controller.Put(11111111, 1, "LK");
+            HttpResponseMessage response = await controller.Put(11111111, 1, "LK");
             BankAccountModel dbBankAccount = modelFactory.Create(dbResult);
 
             // Assert
             Assert.AreEqual(response.StatusCode, HttpStatusCode.Conflict);
         }
         [TestMethod]
-        public void WillnotAcceptNegativeFiguresDeposit()
+        public async Task WillnotAcceptNegativeFiguresDeposit()
         {
             //Arrange
             controller = new AccountController()
@@ -215,7 +216,7 @@ namespace ChilindoBankLtd.Tests.Controllers
 
             // Act
             BankAccount dbResult = dbcontext.BankAccounts.Where(a => a.AccountNumber.Equals(11111111)).FirstOrDefault();
-            HttpResponseMessage response = controller.Put(11111111, -1, "US");
+            HttpResponseMessage response = await controller.Put(11111111, -1, "US");
             BankAccountModel dbBankAccount = modelFactory.Create(dbResult);
 
             // Assert            
@@ -224,7 +225,7 @@ namespace ChilindoBankLtd.Tests.Controllers
             Assert.AreEqual(dbBankAccount.Balance, bankAccount.Balance);
         }
         [TestMethod]
-        public void WillnotAcceptNegativeFiguresWithdrawal()
+        public async Task WillnotAcceptNegativeFiguresWithdrawal()
         {
             //Arrange
             controller = new AccountController()
@@ -235,7 +236,7 @@ namespace ChilindoBankLtd.Tests.Controllers
 
             // Act
             BankAccount dbResult = dbcontext.BankAccounts.Where(a => a.AccountNumber.Equals(11111111)).FirstOrDefault();
-            HttpResponseMessage response = controller.Get(11111111, -1, "US");
+            HttpResponseMessage response = await controller.Get(11111111, -1, "US");
             BankAccountModel dbBankAccount = modelFactory.Create(dbResult);
 
             // Assert            

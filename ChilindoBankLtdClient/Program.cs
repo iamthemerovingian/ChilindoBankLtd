@@ -20,7 +20,7 @@ namespace ChilindoBankLtdClient
                 DoSomethingSimple().Wait();
                 Main(new string[] { });
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Main(new string[] { });
             }
