@@ -44,7 +44,8 @@ namespace ChilindoBankLtd.Tests.Controllers
             HttpResponseMessage response = controller.Get(11111111);
 
             // Assert
-            Assert.IsTrue(response.TryGetContentValue(out RequestResponse bankAccount));
+            RequestResponse bankAccount;
+            Assert.IsTrue(response.TryGetContentValue(out bankAccount));
         }
         
         [TestMethod]
@@ -61,7 +62,8 @@ namespace ChilindoBankLtd.Tests.Controllers
             HttpResponseMessage response = controller.Get(11111111, 1, "US");
 
             // Assert
-            Assert.IsTrue(response.TryGetContentValue(out RequestResponse bankAccount));
+            RequestResponse bankAccount;
+            Assert.IsTrue(response.TryGetContentValue(out bankAccount));
         }
 
         [TestMethod]
@@ -77,8 +79,9 @@ namespace ChilindoBankLtd.Tests.Controllers
             // Act
             HttpResponseMessage response = controller.Put(11111111, 1, "US");
 
-            // Assert
-            Assert.IsTrue(response.TryGetContentValue(out RequestResponse bankAccount));
+            // Assert 
+            RequestResponse bankAccount;
+            Assert.IsTrue(response.TryGetContentValue(out bankAccount));
         }
 
         [TestMethod]
@@ -97,7 +100,8 @@ namespace ChilindoBankLtd.Tests.Controllers
             BankAccountModel dbBankAccount = modelFactory.Create(dbResult);
 
             // Assert
-            response.TryGetContentValue(out RequestResponse bankAccount);
+            RequestResponse bankAccount;
+            response.TryGetContentValue(out bankAccount);
             Assert.AreEqual(dbBankAccount.AccountNumber, bankAccount.AccountNumber);
         }
 
@@ -117,7 +121,8 @@ namespace ChilindoBankLtd.Tests.Controllers
             BankAccountModel dbBankAccount = modelFactory.Create(dbResult);
 
             // Assert
-            Assert.IsTrue(response.TryGetContentValue(out RequestResponse bankAccount));
+            RequestResponse bankAccount;
+            Assert.IsTrue(response.TryGetContentValue(out bankAccount));
             Assert.AreEqual(dbBankAccount.Balance - 1, bankAccount.Balance);
         }
 
@@ -137,7 +142,8 @@ namespace ChilindoBankLtd.Tests.Controllers
             BankAccountModel dbBankAccount = modelFactory.Create(dbResult);
 
             // Assert
-            Assert.IsTrue(response.TryGetContentValue(out RequestResponse bankAccount));
+            RequestResponse bankAccount;
+            Assert.IsTrue(response.TryGetContentValue(out bankAccount));
             Assert.AreEqual(dbBankAccount.Balance + 1, bankAccount.Balance);
         }
 
@@ -213,7 +219,8 @@ namespace ChilindoBankLtd.Tests.Controllers
             BankAccountModel dbBankAccount = modelFactory.Create(dbResult);
 
             // Assert            
-            Assert.IsTrue(response.TryGetContentValue(out RequestResponse bankAccount));
+            RequestResponse bankAccount;
+            Assert.IsTrue(response.TryGetContentValue(out bankAccount));
             Assert.AreEqual(dbBankAccount.Balance, bankAccount.Balance);
         }
         [TestMethod]
@@ -232,7 +239,8 @@ namespace ChilindoBankLtd.Tests.Controllers
             BankAccountModel dbBankAccount = modelFactory.Create(dbResult);
 
             // Assert            
-            Assert.IsTrue(response.TryGetContentValue(out RequestResponse bankAccount));
+            RequestResponse bankAccount;
+            Assert.IsTrue(response.TryGetContentValue(out bankAccount));
             Assert.AreEqual(dbBankAccount.Balance, bankAccount.Balance);
         }
 
