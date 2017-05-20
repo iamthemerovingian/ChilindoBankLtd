@@ -28,35 +28,36 @@ namespace ChilindoBankLtd.Models
         {
             using (ChilindoBankLtdDB context = new ChilindoBankLtdDB())
             {
-                var  account = new BankAccount();
-                bool safeFailed = false;
-                safeFailed = false;
+                bool saveFailed = false;
 
-                account = context.BankAccounts
+                var account = context.BankAccounts
                                  .Where(a => a.AccountNumber.Equals(accountModel.AccountNumber))
                                  .FirstOrDefault();
 
                 account.Balance += amount;
-                context.Entry(account).State = EntityState.Modified;
-
                 do
                 {
                     try
                     {
+                        saveFailed = false;
+
                         context.SaveChanges();
                     }
                     catch (DbUpdateConcurrencyException ex)
                     {
-                        safeFailed = true;
+                        saveFailed = true;
 
-                        //context.Entry(account).Reload();
                         ex.Entries.Single().Reload();
                     }
                     catch (RetryLimitExceededException ex)
                     {
                         Console.WriteLine(ex);
                     }
-                } while (safeFailed);
+                    catch (Exception e)
+                    {
+                        Console.WriteLine();
+                    }
+                } while (saveFailed);
 
                 return account;
             }
@@ -66,25 +67,40 @@ namespace ChilindoBankLtd.Models
         {
             using (ChilindoBankLtdDB context = new ChilindoBankLtdDB())
             {
+                bool saveFailed = false;
+
                 var account = context.BankAccounts
                             .Where(a => a.AccountNumber.Equals(accountModel.AccountNumber))
                             .FirstOrDefault();
 
-                LockAccount(context, account);
-
                 account.Balance -= amount;
-                account.IsLocked = false;
 
-                context.SaveChanges();
+                do
+                {
+                    try
+                    {
+                        saveFailed = false;
+
+                        context.SaveChanges();
+                    }
+                    catch (DbUpdateConcurrencyException ex)
+                    {
+                        saveFailed = true;
+
+                        ex.Entries.Single().Reload();
+                    }
+                    catch (RetryLimitExceededException ex)
+                    {
+                        Console.WriteLine(ex);
+                    }
+                    catch(Exception e)
+                    {
+                        Console.WriteLine();
+                    }
+                } while (saveFailed);
+
                 return account;
             }
-        }
-
-        private static void LockAccount(ChilindoBankLtdDB context, BankAccount account)
-        {
-            account.IsLocked = true;
-            context.Entry(account).State = EntityState.Modified;
-            context.SaveChanges();
         }
     }
 }
