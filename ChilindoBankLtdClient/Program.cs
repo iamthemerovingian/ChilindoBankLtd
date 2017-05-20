@@ -61,6 +61,7 @@ namespace ChilindoBankLtdClient
         {
             Random randomGenerator = new Random();
             var limit = randomGenerator.Next(0, 1000);
+
             for (int i = 0; i < limit; i++)
             {
                 var action = randomGenerator.Next(1, 3);
