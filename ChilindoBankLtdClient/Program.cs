@@ -60,7 +60,7 @@ namespace ChilindoBankLtdClient
         private static async Task DoRandomActions()
         {
             Random randomGenerator = new Random();
-            var limit = randomGenerator.Next(0, 1000);
+            var limit = randomGenerator.Next(0, 100);
 
             for (int i = 0; i < limit; i++)
             {

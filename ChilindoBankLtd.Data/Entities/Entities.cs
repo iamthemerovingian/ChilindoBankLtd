@@ -19,5 +19,7 @@ namespace ChilindoBankLtd.Data.Entities
         public string Currency { get; set; }
         [Required]
         public bool IsLocked { get; set; }
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 }

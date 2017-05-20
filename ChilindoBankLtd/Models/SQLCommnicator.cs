@@ -1,6 +1,8 @@
 ﻿using ChilindoBankLtd.Data.Database;
 using ChilindoBankLtd.Data.Entities;
+using System;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 
 namespace ChilindoBankLtd.Models
@@ -26,15 +28,36 @@ namespace ChilindoBankLtd.Models
         {
             using (ChilindoBankLtdDB context = new ChilindoBankLtdDB())
             {
-                var account = context.BankAccounts
-                            .Where(a => a.AccountNumber.Equals(accountModel.AccountNumber))
-                            .FirstOrDefault();
-                LockAccount(context, account);
+                var  account = new BankAccount();
+                bool safeFailed = false;
+                safeFailed = false;
+
+                account = context.BankAccounts
+                                 .Where(a => a.AccountNumber.Equals(accountModel.AccountNumber))
+                                 .FirstOrDefault();
 
                 account.Balance += amount;
-                account.IsLocked = false;
                 context.Entry(account).State = EntityState.Modified;
-                context.SaveChanges();
+
+                do
+                {
+                    try
+                    {
+                        context.SaveChanges();
+                    }
+                    catch (DbUpdateConcurrencyException ex)
+                    {
+                        safeFailed = true;
+
+                        //context.Entry(account).Reload();
+                        ex.Entries.Single().Reload();
+                    }
+                    catch (RetryLimitExceededException ex)
+                    {
+                        Console.WriteLine(ex);
+                    }
+                } while (safeFailed);
+
                 return account;
             }
         }
@@ -51,7 +74,7 @@ namespace ChilindoBankLtd.Models
 
                 account.Balance -= amount;
                 account.IsLocked = false;
-                context.Entry(account).State = EntityState.Modified;
+
                 context.SaveChanges();
                 return account;
             }

@@ -27,6 +27,8 @@ namespace ChilindoBankLtd.Data.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
+            DbModelBuilder modelBuilder = new DbModelBuilder();
+            modelBuilder.Entity<BankAccount>().Property(p => p.RowVersion).IsConcurrencyToken();
 
             context.BankAccounts.AddOrUpdate((a) => new {a.AccountNumber, a.Balance },
                 new BankAccount { AccountNumber = 11111111, Balance = 10, Currency = "US", IsLocked = false },
