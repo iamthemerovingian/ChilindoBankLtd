@@ -13,6 +13,7 @@ namespace ChilindoBankLtd.Data.Entities
         [Required]
         public int AccountNumber { get; set; }
         [Required]
+        [Range(0, double.PositiveInfinity)]
         public decimal Balance { get; set; }
         [Required]
         [StringLength(2, MinimumLength = 2)]

@@ -160,11 +160,11 @@ namespace ChilindoBankLtd.Tests.Controllers
 
             // Act
             BankAccount dbResult = dbcontext.BankAccounts.Where(a => a.AccountNumber.Equals(11111111)).FirstOrDefault();
-            HttpResponseMessage response = await controller.Get(11111111, 99999999999999, "US");
+            HttpResponseMessage response = await controller.Get(11111111, decimal.MaxValue, "US");
             BankAccountModel dbBankAccount = modelFactory.Create(dbResult);
 
             // Assert
-            Assert.AreEqual(response.StatusCode, HttpStatusCode.Forbidden);
+            Assert.AreEqual(HttpStatusCode.Forbidden, response.StatusCode);
         }
 
         [TestMethod]
@@ -183,7 +183,7 @@ namespace ChilindoBankLtd.Tests.Controllers
             BankAccountModel dbBankAccount = modelFactory.Create(dbResult);
 
             // Assert
-            Assert.AreEqual(response.StatusCode, HttpStatusCode.Conflict);
+            Assert.AreEqual(HttpStatusCode.Conflict, response.StatusCode);
         }
 
         [TestMethod]
@@ -202,7 +202,7 @@ namespace ChilindoBankLtd.Tests.Controllers
             BankAccountModel dbBankAccount = modelFactory.Create(dbResult);
 
             // Assert
-            Assert.AreEqual(response.StatusCode, HttpStatusCode.Conflict);
+            Assert.AreEqual(HttpStatusCode.Conflict, response.StatusCode);
         }
         [TestMethod]
         public async Task WillnotAcceptNegativeFiguresDeposit()

@@ -60,41 +60,72 @@ namespace ChilindoBankLtdClient
         private static async Task DoRandomActions()
         {
             Random randomGenerator = new Random();
-            var limit = randomGenerator.Next(0, 100);
+            var limit = randomGenerator.Next(0, 1000);
+
+            var depositSum = 0.0m;
+            var withdrawalSum = 0.0m;
+            var startingBalance = 0.0m;
+            var endingBalance = 0.0m;
+
+            var expectedBalance = 0.0m;
+
+            var totalTransactions = 0;
+
+            var requesstResponse = await GetBalance("11111111");
+            startingBalance = requesstResponse.Balance;
 
             for (int i = 0; i < limit; i++)
             {
                 var action = randomGenerator.Next(1, 3);
-                var amount = randomGenerator.Next(0, 65535);
+                var amount = randomGenerator.Next(0, 70000);
 
                 if (action.Equals(1))
                 {
+                    depositSum += decimal.Parse(amount.ToString());
                     await Deposit("11111111", amount.ToString(), "US");
                 }
 
                 if (action.Equals(2))
                 {
+                    withdrawalSum += decimal.Parse(amount.ToString());
                     await Withdraw("11111111", amount.ToString(), "US");
                 }
+                totalTransactions ++;
             }
+
+            requesstResponse = await GetBalance("11111111");
+            endingBalance = requesstResponse.Balance;
+
+            expectedBalance = startingBalance + depositSum - withdrawalSum;
+
+            Console.WriteLine("Starting Balance: " + startingBalance);
+            Console.WriteLine("Deposit Sum: " + depositSum);
+            Console.WriteLine("Withdrawal Sum: " + withdrawalSum);
+            Console.WriteLine("Expected Balance: " + expectedBalance);
+            Console.WriteLine("Actual Balance: " + endingBalance);
+            Console.WriteLine("Total Transactions Processed: " + totalTransactions);
+
         }
 
         //Primary Functions.
         private static async Task Withdraw(string accountNumber, string amount, string currency)
         {
+            Console.WriteLine("Withdrawing: " + amount);
             var response = await client.GetAsync(GetWithdrawURL(int.Parse(accountNumber), decimal.Parse(amount), currency));
             await ProcessResponse(response);
-
         }
         private static async Task Deposit(string accountNumber, string amount, string currency)
         {
+            Console.WriteLine("Depositing: " + amount);
             var response = await client.PutAsJsonAsync(GetDepositURL(int.Parse(accountNumber), decimal.Parse(amount), currency), new RequestResponse() { });
             await ProcessResponse(response);
         }
-        private async static Task GetBalance(string accountNumber)
+        private async static Task<RequestResponse> GetBalance(string accountNumber)
         {
             var response = await client.GetAsync(GetBalanceURL(int.Parse(accountNumber)));
-            await ProcessResponse(response);
+            var requestResponse = await response.Content.ReadAsAsync<RequestResponse>();
+            await ProcessResponse(response, requestResponse);
+            return requestResponse;
         }
 
         //Building URIs.
@@ -138,16 +169,16 @@ namespace ChilindoBankLtdClient
         }
 
         //Processing responses.
-        private static async Task ProcessResponse(HttpResponseMessage response)
+        private static async Task ProcessResponse(HttpResponseMessage response, RequestResponse requestResponse = null)
         {
-            RequestResponse requestResponse = null;
-
             try
             {
-                requestResponse = await response.Content.ReadAsAsync<RequestResponse>();
+                if(requestResponse == null)
+                    requestResponse = await response.Content.ReadAsAsync<RequestResponse>();
             }
-            catch (Exception)
+            catch (Exception e)
             {
+
             }
 
             PrintRequestResponse(requestResponse);

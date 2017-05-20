@@ -33,14 +33,12 @@ namespace ChilindoBankLtd.Models
                 var account = context.BankAccounts
                                  .Where(a => a.AccountNumber.Equals(accountModel.AccountNumber))
                                  .FirstOrDefault();
-
-                account.Balance += amount;
                 do
                 {
                     try
                     {
                         saveFailed = false;
-
+                        account.Balance += amount;
                         context.SaveChanges();
                     }
                     catch (DbUpdateConcurrencyException ex)
@@ -49,13 +47,9 @@ namespace ChilindoBankLtd.Models
 
                         ex.Entries.Single().Reload();
                     }
-                    catch (RetryLimitExceededException ex)
-                    {
-                        Console.WriteLine(ex);
-                    }
                     catch (Exception e)
                     {
-                        Console.WriteLine();
+                        //Log Exception
                     }
                 } while (saveFailed);
 
@@ -70,17 +64,18 @@ namespace ChilindoBankLtd.Models
                 bool saveFailed = false;
 
                 var account = context.BankAccounts
-                            .Where(a => a.AccountNumber.Equals(accountModel.AccountNumber))
-                            .FirstOrDefault();
-
-                account.Balance -= amount;
-
+                                .Where(a => a.AccountNumber.Equals(accountModel.AccountNumber))
+                                .FirstOrDefault();
                 do
                 {
                     try
                     {
                         saveFailed = false;
 
+                        if (account.Balance < amount)
+                            return null;
+
+                        account.Balance -= amount;
                         context.SaveChanges();
                     }
                     catch (DbUpdateConcurrencyException ex)
@@ -89,13 +84,9 @@ namespace ChilindoBankLtd.Models
 
                         ex.Entries.Single().Reload();
                     }
-                    catch (RetryLimitExceededException ex)
-                    {
-                        Console.WriteLine(ex);
-                    }
                     catch(Exception e)
                     {
-                        Console.WriteLine();
+                        //Log Exception
                     }
                 } while (saveFailed);
 

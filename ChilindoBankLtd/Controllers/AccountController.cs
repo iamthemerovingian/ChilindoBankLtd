@@ -31,64 +31,48 @@ namespace ChilindoBankLtd.Controllers
         [Route("withdraw")]
         public async Task<HttpResponseMessage> Get(int accountNumber, decimal amount, string currency)
         {
-            try
-            {
-                BankAccountModel result = await Task.FromResult(modelFactory.Create(sqlComm.GetAccount(accountNumber)));
+            BankAccountModel result = await Task.FromResult(modelFactory.Create(sqlComm.GetAccount(accountNumber)));
 
-                if (result == null)
-                    return await Task.FromResult(Request.CreateResponse(HttpStatusCode.NotFound));
+            if (result == null)
+                return await Task.FromResult(Request.CreateResponse(HttpStatusCode.NotFound));
 
-                if (amount < 0)
-                    return await Task.FromResult(Request.CreateResponse(HttpStatusCode.Forbidden, modelFactory.CreateResponse(result, false, message: "Invalid Amount!")));
+            if (amount < 0)
+                return await Task.FromResult(Request.CreateResponse(HttpStatusCode.Forbidden, modelFactory.CreateResponse(result, false, message: "Invalid Amount!")));
 
-                if (!result.Currency.Equals(currency, StringComparison.OrdinalIgnoreCase))
-                    return await Task.FromResult(Request.CreateResponse(HttpStatusCode.Conflict, modelFactory.CreateResponse(result, false, message: "Currency Mismatch")));
+            if (!result.Currency.Equals(currency, StringComparison.OrdinalIgnoreCase))
+                return await Task.FromResult(Request.CreateResponse(HttpStatusCode.Conflict, modelFactory.CreateResponse(result, false, message: "Currency Mismatch")));
 
-                if (result.Balance < amount)
-                    return await Task.FromResult(Request.CreateResponse(HttpStatusCode.Forbidden, "Your account balance is insufficient to fulfill this request."));
+            //if (result.Balance < amount)
+            //    return await Task.FromResult(Request.CreateResponse(HttpStatusCode.Forbidden, "Your account balance is insufficient to fulfill this request."));
 
-                result = await Task.FromResult(modelFactory.Create(sqlComm.Withdraw(result, amount, currency)));
-                return await Task.FromResult(Request.CreateResponse(HttpStatusCode.OK, modelFactory.CreateResponse(result, message: "Withdrawal Complete!")));
+            var bankAccount = await Task.FromResult(sqlComm.Withdraw(result, amount, currency));
 
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine();
-                return await Task.FromResult(Request.CreateResponse(HttpStatusCode.ServiceUnavailable));
-            }
+            if(bankAccount == null)
+                return await Task.FromResult(Request.CreateResponse(HttpStatusCode.Forbidden, "Your account balance is insufficient to fulfill this request."));
+
+            result = await Task.FromResult(modelFactory.Create(bankAccount));
+            return await Task.FromResult(Request.CreateResponse(HttpStatusCode.OK, modelFactory.CreateResponse(result, message: "Withdrawal Complete!")));
         }
 
         //Deposit
         [Route("deposit")]
         public async Task<HttpResponseMessage> Put(int accountNumber, decimal amount, string currency)
         {
-            try
-            {
-                BankAccountModel result = await Task.FromResult(modelFactory.Create(sqlComm.GetAccount(accountNumber)));
+            BankAccountModel result = await Task.FromResult(modelFactory.Create(sqlComm.GetAccount(accountNumber)));
 
+            if (result == null)
+                return await Task.FromResult(Request.CreateResponse(HttpStatusCode.NotFound));
 
-                if (result == null)
-                    return await Task.FromResult(Request.CreateResponse(HttpStatusCode.NotFound));
+            if (amount < 0)
+                return await Task.FromResult(Request.CreateResponse(HttpStatusCode.Forbidden, modelFactory.CreateResponse(result, false, message: "Invalid Amount!")));
 
-                if (amount < 0)
-                    return await Task.FromResult(Request.CreateResponse(HttpStatusCode.Forbidden, modelFactory.CreateResponse(result, false, message: "Invalid Amount!")));
+            if (!result.Currency.Equals(currency, StringComparison.OrdinalIgnoreCase))
+                return await Task.FromResult(Request.CreateResponse(HttpStatusCode.Conflict, modelFactory.CreateResponse(result, false, message: "Currency Mismatch")));
 
-                if (!result.Currency.Equals(currency, StringComparison.OrdinalIgnoreCase))
-                    return await Task.FromResult(Request.CreateResponse(HttpStatusCode.Conflict, modelFactory.CreateResponse(result, false, message: "Currency Mismatch")));
+            //return await Task.FromResult(Request.CreateResponse(HttpStatusCode.RequestTimeout, modelFactory.CreateResponse(result,false, message: "Sorry for the inconvenience, the sever is busy, please try again later.")));
 
-                //return await Task.FromResult(Request.CreateResponse(HttpStatusCode.RequestTimeout, modelFactory.CreateResponse(result,false, message: "Sorry for the inconvenience, the sever is busy, please try again later.")));
-
-
-                result = await Task.FromResult(modelFactory.Create(sqlComm.Deposit(result, amount, currency)));
-
-                return await Task.FromResult(Request.CreateResponse(HttpStatusCode.OK, modelFactory.CreateResponse(result, message: "Deposit Complete!")));
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine();
-                return await Task.FromResult(Request.CreateResponse(HttpStatusCode.ServiceUnavailable));
-            }
+            result = await Task.FromResult(modelFactory.Create(sqlComm.Deposit(result, amount, currency)));
+            return await Task.FromResult(Request.CreateResponse(HttpStatusCode.OK, modelFactory.CreateResponse(result, message: "Deposit Complete!")));
         }
     }
 }
