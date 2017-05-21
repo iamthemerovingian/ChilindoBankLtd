@@ -48,7 +48,7 @@ namespace ChilindoBankLtd.Tests.Controllers
             RequestResponse bankAccount;
             Assert.IsTrue(response.TryGetContentValue(out bankAccount));
         }
-        
+
         [TestMethod]
         public async Task WithdrawReturnsRequestResponse()
         {
@@ -61,6 +61,23 @@ namespace ChilindoBankLtd.Tests.Controllers
 
             // Act
             HttpResponseMessage response = await controller.Get(11111111, 1, "US");
+
+            // Assert
+            RequestResponse bankAccount;
+            Assert.IsTrue(response.TryGetContentValue(out bankAccount));
+        }
+        [TestMethod]
+        public async Task WithdrawMAXReturnsRequestResponse()
+        {
+            //Arrange
+            controller = new AccountController()
+            {
+                Request = new HttpRequestMessage(),
+                Configuration = new HttpConfiguration()
+            };
+
+            // Act
+            HttpResponseMessage response = await controller.Get(11111111, decimal.MaxValue, "US");
 
             // Assert
             RequestResponse bankAccount;
